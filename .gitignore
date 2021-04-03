@@ -1,0 +1,4 @@
+*.vscode
+*.nfo
+*.mp4
+!*template.nfo
