@@ -13,7 +13,8 @@ def getMediaInfo(path):
     return mediaInfo
 
 
-def parse(fileToParse, encoder, videoBitRate, template, source):
+def parse(sourceName, fileToParse, encoder, videoBitRate, template, source, screenshotsLinks):
+    print("Source name will be set to %s" % sourceName)
     # Change the mediaInfo string into an array, each item in array is a line
     mediaInfo = getMediaInfo(fileToParse).splitlines()
     # Find the name of the NFO based on the name of the video file
@@ -71,18 +72,33 @@ def parse(fileToParse, encoder, videoBitRate, template, source):
     print("Video bit rate will be %d based upon MediaInfo calculation" % videoBitRate)
     print("Encoder will be %s" % encoder)
     print("NFO will be created titled '%s'" % nfoName)
+    # Make screenshot formatting
+    screenshots = ""
+    for idx, link in enumerate(screenshotsLinks):
+        # We only want to process every other
+        if idx % 2 != 0 or idx == len(screenshotsLinks)-2:
+            continue
+        screenshots+=(link)
+        screenshots+="  "
+        screenshots+=(screenshotsLinks[idx+2])
+        screenshots+="\n"
+        screenshots+="\n"
+    # Trim the last newline to avoid double spacing
+    screenshots = screenshots.rstrip()
     # Make a new file from the template file
     copyfile(template,nfoName)
     fileIn = open(nfoName, "rt")
     fileData = fileIn.read()
     fileIn.close()
     # Replace everything in the new file we created
+    fileData = fileData.replace("<SOURCE>", sourceName)
     fileData = fileData.replace("<CHAPTERS>", chapters)
     fileData = fileData.replace("<SIZE>", size)
     fileData = fileData.replace("<DURATION>", duration)
     fileData = fileData.replace("<VIDEO_BIT_RATE>", str(videoBitRate))
     fileData = fileData.replace("<RESOLUTION>", resolution)
     fileData = fileData.replace("<ENCODER>", encoder)
+    fileData = fileData.replace("<SCREENS>",screenshots)
     fileOut = open(nfoName, "wt")
     fileOut.write(fileData)
     fileOut.close()
@@ -92,21 +108,38 @@ def parse(fileToParse, encoder, videoBitRate, template, source):
 if __name__ == '__main__':
     parser = ArgumentParser(description="Parses video files to create a NFO complying to BHDStudio standards via a TEMPLATE")
     parser.add_argument("--fileToParse", help="Media file you'd like to parse, full path or relative path accepted", default=None)
+    parser.add_argument("--source", help="Source of which you encoded the media from", default="<SOURCE>")
     parser.add_argument("--encoder", help="Encoder name you'd like to use in the NFO", default="Turing")
     parser.add_argument("--videoBitRate", help="Bit rate of the video for the NFO", default=None)
     parser.add_argument("--template", help="Template file to use", default="TEMPLATE.nfo")
-    parser.add_argument("--source", help="Name of the source you used to encode the media", default=None)
-
-    # Check to ensure the file to parse is a file we can read
+    #parser.add_argument("--automaticScreenshots", help="Automatic for automatic screenshot upload, manual for supplying the links")
+    #parser.add_argument("--screenshotsFolder", help="If using automatic screenshots, you must specify the folder", required='--automaticScreenshots' in sys.argv)
     args = parser.parse_args()
+    # Check to ensure the file to parse is a file we can read
     if args.fileToParse == None or not (os.access(args.fileToParse,os.R_OK)):
         print("Could not read file provided. Exiting")
         exit()
     if not (os.access(args.template,os.R_OK)):
         print("Could not read template file called %s, exiting" % args.template)
 
+    #TODO: Check if screenshots folder is readable
     #TODO: Check if video file is something we can actually run mediaInfo on
 
     print("Arguments validated")
-    parse(args.fileToParse, args.encoder, args.videoBitRate, args.template, args.source)
+    print("Screenshot links required")
+    print("Enter/Paste your links, then press Enter (might have to do it twice...)")
+    screenshotsLinks = []
+    while True:
+        try:
+            line = input()
+            if not line:
+                break
+        except:
+            break
+        screenshotsLinks.append(line)
+    if(len(screenshotsLinks) % 2 != 0):
+        # Odd number of screenshots
+        print("You must supply an even number of screenshots for before and after")
+        exit(-1)
+    parse(args.source, args.fileToParse, args.encoder, args.videoBitRate, args.template, args.source, screenshotsLinks)
     
