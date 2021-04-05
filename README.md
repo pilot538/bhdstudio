@@ -17,9 +17,20 @@ Automatically writes over an existing NFO of the same name
         --template <template> Template file to use", default="TEMPLATE.nfo")
         --source <source> Name of the source you used to encode the media", default=None)
 
+Installation
+
+    1) Install Python3 for Windows: https://www.python.org/downloads/
+        * You probably want to check the box to have Python3 added to your PATH variable
+    2) Pip should be installed, verify with `pip -V`
+        * If not, install pip3: https://phoenixnap.com/kb/install-pip-windows
+    3) Install required pip packages (this will be streamlined in the future)
+        * pip install pymediainfo
+
+
 Usage:
 
-    python parser.py --fileToParse myEncodedVideo.mp4 --encoder pilot538
+    python parser.py --fileToParse <MEDIA_FILE> --encoder <YOUR_NAME> --source <NAME_OF_SOURCE> 
+    When prompted, copy/paste your screenshots in
 
 
 ## Uploader

@@ -83,7 +83,7 @@ def parse(sourceName, fileToParse, encoder, videoBitRate, template, source, scre
         screenshots+=(screenshotsLinks[idx+2])
         screenshots+="\n"
         screenshots+="\n"
-    # Trim the last newline to avoid double spacing
+    # Trim the last newlines to avoid spacing out the [/center] tag
     screenshots = screenshots.rstrip()
     # Make a new file from the template file
     copyfile(template,nfoName)
@@ -108,10 +108,10 @@ def parse(sourceName, fileToParse, encoder, videoBitRate, template, source, scre
 if __name__ == '__main__':
     parser = ArgumentParser(description="Parses video files to create a NFO complying to BHDStudio standards via a TEMPLATE")
     parser.add_argument("--fileToParse", help="Media file you'd like to parse, full path or relative path accepted", default=None)
-    parser.add_argument("--source", help="Source of which you encoded the media from", default="<SOURCE>")
     parser.add_argument("--encoder", help="Encoder name you'd like to use in the NFO", default="Turing")
     parser.add_argument("--videoBitRate", help="Bit rate of the video for the NFO", default=None)
     parser.add_argument("--template", help="Template file to use", default="TEMPLATE.nfo")
+    parser.add_argument("--source", help="Source of which you encoded the media from", default="<SOURCE>")
     #parser.add_argument("--automaticScreenshots", help="Automatic for automatic screenshot upload, manual for supplying the links")
     #parser.add_argument("--screenshotsFolder", help="If using automatic screenshots, you must specify the folder", required='--automaticScreenshots' in sys.argv)
     args = parser.parse_args()
