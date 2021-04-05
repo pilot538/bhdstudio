@@ -13,28 +13,9 @@ def getMediaInfo(path):
     return mediaInfo
 
 
-if __name__ == '__main__':
-    parser = ArgumentParser(description="Parses video files to create a NFO complying to BHDStudio standards via a TEMPLATE")
-    parser.add_argument("--fileToParse", help="Media file you'd like to parse, full path or relative path accepted", default=None)
-    parser.add_argument("--encoder", help="Encoder name you'd like to use in the NFO", default="Turing")
-    parser.add_argument("--videoBitRate", help="Bit rate of the video for the NFO", default=None)
-    parser.add_argument("--template", help="Template file to use", default="TEMPLATE.nfo")
-    parser.add_argument("--source", help="Name of the source you used to encode the media", default=None)
-
-    # Check to ensure the file to parse is a file we can read
-    args = parser.parse_args()
-    if args.fileToParse == None or not (os.access(args.fileToParse,os.R_OK)):
-        print("Could not read file provided. Exiting")
-        exit()
-    if not (os.access(args.template,os.R_OK)):
-        print("Could not read template file called %s, exiting" % args.template)
-
-    #TODO: Check if video file is something we can actually run mediaInfo on
-
-    print("Arguments validated")
-
+def parse(fileToParse, encoder, videoBitRate, template, source):
     # Change the mediaInfo string into an array, each item in array is a line
-    mediaInfo = getMediaInfo(args.fileToParse).splitlines()
+    mediaInfo = getMediaInfo(fileToParse).splitlines()
     # Find the name of the NFO based on the name of the video file
     nfoName = mediaInfo[1].split(":")[1][1:]
     nfoName = nfoName[:-3]
@@ -70,10 +51,28 @@ if __name__ == '__main__':
     # Create resolution string
     resolution = width + " x " + height + " (" + aspectRatio + ")"
     print("Resolution is %s, based on MediaInfo" %resolution)
-    print("Encoder will be %s" % args.encoder)
+    # Calculate video bit rate
+    if "2160p" in mediaInfo[1]:
+        # It's in the MediaInfo correct, so pull it out
+        videoBitRate = int(mediaInfo[20].split(":")[1][1:-5])
+    # For 1080p and 720p, MediaInfo rounds the video bit rate
+    # So we take the overall bit rate, which isn't rounded, and
+    # subtract the audio bitrate (640 for 1080p, 448 for 720p)
+    elif "1080p" in mediaInfo[1]:
+        overallBitRate = int(re.sub(" ","",mediaInfo[7].split(":")[1][1:-5]))
+        videoBitRate = overallBitRate - 640
+    elif "720p" in mediaInfo[1]:
+        overallBitRate = int(re.sub(" ","",mediaInfo[7].split(":")[1][1:-5]))
+        videoBitRate = overallBitRate - 448
+    else:
+        print("Title did not contain 2160p, 1080p, or 720p!!")
+        print("Does not conform, exiting...")
+        exit(-1)
+    print("Video bit rate will be %d based upon MediaInfo calculation" % videoBitRate)
+    print("Encoder will be %s" % encoder)
     print("NFO will be created titled '%s'" % nfoName)
     # Make a new file from the template file
-    copyfile(args.template,nfoName)
+    copyfile(template,nfoName)
     fileIn = open(nfoName, "rt")
     fileData = fileIn.read()
     fileIn.close()
@@ -81,10 +80,33 @@ if __name__ == '__main__':
     fileData = fileData.replace("<CHAPTERS>", chapters)
     fileData = fileData.replace("<SIZE>", size)
     fileData = fileData.replace("<DURATION>", duration)
+    fileData = fileData.replace("<VIDEO_BIT_RATE>", str(videoBitRate))
     fileData = fileData.replace("<RESOLUTION>", resolution)
-    fileData = fileData.replace("<ENCODER>", args.encoder)
+    fileData = fileData.replace("<ENCODER>", encoder)
     fileOut = open(nfoName, "wt")
     fileOut.write(fileData)
     fileOut.close()
     print("Parsing complete, file created. Please check for errors!")
-    exit(1)
+    return 1
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description="Parses video files to create a NFO complying to BHDStudio standards via a TEMPLATE")
+    parser.add_argument("--fileToParse", help="Media file you'd like to parse, full path or relative path accepted", default=None)
+    parser.add_argument("--encoder", help="Encoder name you'd like to use in the NFO", default="Turing")
+    parser.add_argument("--videoBitRate", help="Bit rate of the video for the NFO", default=None)
+    parser.add_argument("--template", help="Template file to use", default="TEMPLATE.nfo")
+    parser.add_argument("--source", help="Name of the source you used to encode the media", default=None)
+
+    # Check to ensure the file to parse is a file we can read
+    args = parser.parse_args()
+    if args.fileToParse == None or not (os.access(args.fileToParse,os.R_OK)):
+        print("Could not read file provided. Exiting")
+        exit()
+    if not (os.access(args.template,os.R_OK)):
+        print("Could not read template file called %s, exiting" % args.template)
+
+    #TODO: Check if video file is something we can actually run mediaInfo on
+
+    print("Arguments validated")
+    parse(args.fileToParse, args.encoder, args.videoBitRate, args.template, args.source)
+    
