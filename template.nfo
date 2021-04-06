@@ -1,4 +1,4 @@
-RELEASE INFO
+[color="#f5c70a"]RELEASE INFO[/color]
 
 Source                  : <SOURCE> (Thanks!)
 Chapters                : <CHAPTERS>
@@ -7,23 +7,23 @@ Duration                : <DURATION>
 Video                   : MPEG-4 AVC Video / <VIDEO_BIT_RATE> kbps / 23.976 fps / High Profile 4.1
 Resolution              : <RESOLUTION>
 Audio                   : English / Dolby Digital Audio / 5.1 / 48 kHz / 640 kbps
-Encoder                 : <ENCODER>
+Encoder                 : [color="#f5c70a"]<ENCODER>[/color]
 
-RELEASE NOTES
+[color="#f5c70a"]RELEASE NOTES[/color]
 
 -Optimized for PLEX, emby, Jellyfin, and other streaming platforms
 -Downmixed Lossless audio track to Dolby Digital 5.1
 
-SCREENSHOTS
+[color="#f5c70a"]SCREENSHOTS[/color]
 [center]
-SOURCE<<<<<<<<<<<<<<<<<-------------------VS------------------->>>>>>>>>>>>>>>>>ENCODE
+[color="#f5c70a"]SOURCE[/color]<<<<<<<<<<<<<<<<<-------------------[color="#f5c70a"]VS[/color]------------------->>>>>>>>>>>>>>>>>[color="#f5c70a"]ENCODE[/color]
 <SCREENS>
 [/center]
-GREETZ
+[color="#f5c70a"]GREETZ[/color]
 
 All those who support our group, our encoders, and our community. 
 
-GROUP NOTES
+[color="#f5c70a"]GROUP NOTES[/color]
 
 Enjoy!
 
