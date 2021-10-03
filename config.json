@@ -1,0 +1,6 @@
+{
+    "TORRENTPASSKEY" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "BHDAPIKEY" : "xxxxxxxxxxxxxxxxxxx",
+    "BHDUPLOADURL" : "https://beyond-hd.me/api/upload/",
+    "MEDIAFOLDER" : "filesToUpload/"
+}

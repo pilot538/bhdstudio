@@ -2,3 +2,4 @@
 *.nfo
 *.mp4
 !*template.nfo
+*.png

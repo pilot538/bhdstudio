@@ -1,0 +1,4 @@
+requests
+imdbpy
+tmdbv3api
+pymediainfo
