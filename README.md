@@ -29,7 +29,10 @@ Installation
 
 Usage:
 
+
+    pip install -r requirements.txt
     python parser.py --fileToParse <MEDIA_FILE> --encoder <YOUR_NAME> --source <NAME_OF_SOURCE> 
+    
     When prompted, copy/paste your screenshots in
 
 
